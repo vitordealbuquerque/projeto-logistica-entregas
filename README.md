@@ -3,6 +3,10 @@
 Projeto de portfólio para transição de carreira para Análise de Dados.
 Setor: **Logística**. Ciclo completo: modelagem SQL → limpeza → análise → dashboard geográfico.
 
+![Dashboard Power BI — Performance de Entregas](06_prints/print_dashboard_final.png)
+
+Passo a passo de como o dashboard foi montado (modelo, medidas DAX, gráficos): [`GUIA_POWER_BI.md`](GUIA_POWER_BI.md). Documentação completa do projeto: [`DOCUMENTACAO_PROJETO.md`](DOCUMENTACAO_PROJETO.md).
+
 ---
 
 ## Pergunta de negócio
@@ -35,6 +39,8 @@ Cinco perguntas derivadas:
 ```
 projeto-logistica-entregas/
 ├── README.md
+├── DOCUMENTACAO_PROJETO.md           # documentação completa do projeto (conceitos, dataset, checklist)
+├── GUIA_POWER_BI.md                  # passo a passo do dashboard: modelo, medidas DAX, gráficos
 ├── 01_extracao_dados.md              # como os dados foram gerados
 ├── 02_sql/
 │   ├── 01_criar_tabelas.sql          # DDL + índices + constraints
@@ -47,12 +53,13 @@ projeto-logistica-entregas/
 │   └── envios.csv                    # 22.000 envios em 2024
 ├── 04_dashboard_entregas.xlsx        # dashboard executivo
 ├── 05_post_linkedin.md               # texto pronto pra postar
-└── 06_prints/                        # 5 imagens pro post
-    ├── print_01_erd.png              # ERD estilo DBeaver
-    ├── print_02_sql.png              # query com resultado (DBeaver)
-    ├── print_03_dashboard.png        # dashboard Power BI
-    ├── print_04_mapa_bi.png          # mapa de bolhas por UF
-    └── print_05_insights.png         # slide de insights
+└── 06_prints/                        # imagens reais do projeto
+    ├── fluxograma_ferramentas.png    # pipeline de ferramentas (Python → PostgreSQL → Power BI → GitHub)
+    ├── capa_linkedin.png             # capa com os KPIs principais
+    ├── print_dashboard_final.png     # dashboard Power BI completo
+    ├── print_sql_panorama_executivo.png   # print real do SQL — panorama executivo
+    ├── print_sql_ranking_transportadoras.png  # print real do SQL — ranking (RANK)
+    └── print_sql_evolucao_mensal.png # print real do SQL — evolução mensal (LAG)
 ```
 
 ---
@@ -94,8 +101,8 @@ filiais (15 linhas)  ────────┘
 | Ticket médio de frete                      | R$ 47,14        |
 | Melhor SLA (transportadora)                | AeroExpress 87,6% |
 | Pior SLA (transportadora)                  | TransNorte Cargo 77,8% |
-| Pior SLA (região)                          | Norte 72,4%     |
-| Melhor SLA (região)                        | Sudeste 87,5%   |
+| Pior SLA (região)                          | Norte 76,6%     |
+| Melhor SLA (região)                        | Sudeste 88,0%   |
 | Modal mais caro                            | Aéreo R$ 124    |
 | Modal mais barato                          | Rodoviário R$ 38 |
 | Top motivo de atraso                       | Falha na roteirização |
