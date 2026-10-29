@@ -23,14 +23,14 @@ O script gera:
   - Distância calculada a partir das UFs de origem/destino
   - Peso lognormal, valor frete função de peso × distância × modal
   - Data coleta, data prometida e data entrega (com atraso ajustado por região destino, transportadora e sazonalidade)
-  - Modal: rodoviário (90%), aéreo (8%), rodoaéreo (2%)
+  - Modal: rodoviário (88,4%), aéreo (9,6%), rodoaéreo (2,0%)
   - Status: entregue (98,7%), devolvido (0,6%), extraviado (0,7%)
 
 ### Regras de negócio embutidas nos dados
 
-- **SLA médio geral:** ~85% (fiel ao padrão do setor no e-commerce brasileiro)
-- **Norte tem 1,75× mais atraso que o Sudeste** (limitação de infraestrutura)
-- **Nov/Dez explodem** (Black Friday e Natal puxam volume +55% a +65% e pioram SLA em ~1,2×)
+- **SLA médio geral:** cerca de 85% (85,03% sobre os entregues)
+- **Norte tem cerca de 2× o atraso do Sudeste** (23,43% contra 11,96%)
+- **Nov/Dez com mais volume** (novembro +45% e dezembro +59% sobre a média mensal, com taxa de atraso cerca de 1,1× a média do ano). É uma premissa do gerador, não um achado de operação real.
 - **Transação para UF diferente da origem** aumenta o tempo médio
 - **Aéreo custa 3,2× o rodoviário** por unidade
 - **Ticket médio de fraude é 4,5× o legítimo** — não usado aqui, mas mesmo padrão do outro projeto

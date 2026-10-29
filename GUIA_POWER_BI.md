@@ -1,6 +1,6 @@
 # Passo a passo — Power BI (Logística)
 
-Do zero até o dashboard: extração dos dados, modelo, todas as medidas DAX e qual gráfico usar em cada bloco do fundo (`06_prints/fundo_dashboard_powerbi.png`).
+Do zero até o dashboard: extração dos dados, modelo, todas as medidas DAX e qual gráfico usar em cada bloco do fundo.
 
 ---
 
@@ -17,7 +17,7 @@ Do zero até o dashboard: extração dos dados, modelo, todas as medidas DAX e q
 
 1. Vá na view **Modelo** (ícone de diagrama, barra lateral esquerda).
 2. Confirme as duas relações: `filiais[filial_id]` → `envios[filial_origem_id]` e `transportadoras[transportadora_id]` → `envios[transportadora_id]`, ambas 1 para muitos, direção única (filtro de filiais/transportadoras para envios).
-3. As colunas calculadas já vêm prontas em `envios` (mesma lógica do `03_limpeza.sql`): `dias_reais`, `dias_atraso`, `no_prazo`, `frete_por_kg`, `ano_mes`, `custo_km`. Não precisa recriar nada.
+3. As colunas calculadas já vêm prontas em `envios` (mesma lógica do `03_limpeza.sql`): `dias_reais`, `dias_atraso`, `no_prazo`, `frete_por_kg` e `ano_mes`. A coluna `custo_km` (`valor_frete / distancia_km`) existe só no Power BI. Não precisa recriar nada.
 
 ## Parte 3 — Medidas DAX (todas já criadas no modelo)
 

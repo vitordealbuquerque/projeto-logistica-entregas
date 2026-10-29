@@ -12,7 +12,7 @@ Repositório: `projeto-logistica-entregas` (GitHub) · Dashboard: Power BI
 
 ### 1. Pré-requisitos de Software (Ambiente Local)
 
-* PostgreSQL 14+ (instalação local, com `psql` e pgAdmin 4)
+* PostgreSQL 15 ou superior (instalação local, com `psql` e pgAdmin 4)
 * Power BI Desktop
 * Python 3.x, para gerar a base sintética
 * Conta no GitHub
@@ -27,7 +27,7 @@ Modelagem Relacional – Fundamentos (tabela dimensão x tabela fato)
 
 ### Dataset - Informações
 
-Base sintética gerada em Python, calibrada com KPIs setoriais públicos (ANTT, ILOS, CNT) para ficar fiel ao padrão real de operação de transportadora — SLA geral próximo de 85%, Norte com atraso maior que Sudeste, pico de volume em novembro/dezembro.
+Base sintética gerada em Python, com parâmetros inspirados em indicadores públicos (ANTT, ILOS, CNT): SLA geral próximo de 85%, Norte com cerca de 2 vezes o atraso do Sudeste e pico de volume em novembro e dezembro (45% e 59% acima da média mensal). Esses padrões foram premissas do gerador, não achados de uma operação real.
 
 ---
 
@@ -38,7 +38,7 @@ Namespace dentro do banco de dados que agrupa as tabelas do projeto (`logistica`
 ________________
 
 **SLA (Service Level Agreement)**
-Percentual de envios entregues dentro do prazo prometido, sobre o total de envios entregues. É o KPI central do projeto.
+Percentual de envios entregues dentro do prazo prometido, sobre o total de envios entregues (21.729). Sobre os 22.000 envios, incluindo devolvidos e extraviados, o resultado seria 83,99%. É o KPI central do projeto.
 ________________
 
 **Coluna calculada `no_prazo`**
@@ -54,11 +54,11 @@ Tabela temporária criada dentro de uma query usando `WITH`, usada para organiza
 ________________
 
 **Custo por Km**
-Valor do frete dividido pela distância percorrida — indicador de eficiência de custo por modal (rodoviário, aéreo, rodoaéreo).
+Valor do frete dividido pela distância percorrida (`valor_frete / distancia_km`), calculado por envio. A média dessa razão entre os envios dá R$ 0,06 por km. A coluna `custo_km` existe só no modelo do Power BI; o `03_limpeza.sql` não a cria.
 ________________
 
 **Modal**
-Meio de transporte do envio: rodoviário (~90% do volume), aéreo (~8%, mais caro) ou rodoaéreo (~2%).
+Meio de transporte do envio: rodoviário (88,4% do volume), aéreo (9,6%, mais caro) ou rodoaéreo (2,0%).
 ________________
 
 **Medida DAX**
@@ -71,10 +71,6 @@ Camada do Power BI onde ficam as tabelas, relacionamentos e medidas — a base s
 ---
 
 ## ◾ Fluxo das Ferramentas (Arquitetura do Projeto)
-
-![Pipeline de Ferramentas — Python, CSV, PostgreSQL, Power BI, GitHub, LinkedIn](fluxograma_ferramentas.png)
-
-Mesmo diagrama gerado no Claude Design usado no `projeto-banco-digital` (prompt salvo em `PROMPTS_CLAUDE_DESIGN.md`) — o pipeline de ferramentas é idêntico entre os dois projetos, só muda o domínio dos dados. Não precisa gerar um novo diagrama pra isso.
 
 Papel de cada etapa no pipeline: Python entrega os dados brutos em CSV; PostgreSQL é onde o dado é modelado, limpo e analisado (é daqui que saem os números oficiais do projeto); Power BI transforma o resultado das análises num dashboard visual; GitHub documenta e publica o código e os resultados; LinkedIn divulga o projeto pronto.
 
@@ -94,7 +90,7 @@ flowchart TD
     filiais[("filiais\n(DIMENSÃO — 15 linhas)")] --> envios
 ```
 
-Como foi usado no projeto: schema próprio (`logistica`, não `public`), com chaves primárias, foreign keys e constraints garantindo a integridade. Depois da carga, roda-se limpeza (nulos, colunas derivadas como `no_prazo`, `dias_atraso`, `frete_por_kg`, `ano_mes`, `custo_km`) e os blocos de análise com CTE, `RANK`, `LAG` e `PERCENTILE_CONT`.
+Como foi usado no projeto: schema próprio (`logistica`, não `public`), com chaves primárias, foreign keys e constraints garantindo a integridade. Depois da carga, roda-se limpeza (nulos, colunas derivadas como `no_prazo`, `dias_atraso`, `frete_por_kg`, `ano_mes`) e os blocos de análise com CTE, `RANK`, `LAG` e `PERCENTILE_CONT`.
 
 Comandos principais
 
@@ -201,8 +197,8 @@ Colunas
 
 * 22.000 envios · 21.729 entregues · 18.477 no prazo · 128 devolvidos · 143 extraviados
 * SLA geral: 85,03%
-* Receita de frete: R$ 1.037.081,11 · Ticket médio: R$ 47,14 · Tempo médio de entrega: 4,39 dias · Custo por km médio: R$ 0,06
-* SLA por região, do melhor pro pior: Sudeste 88,04% · Sul 87,21% · Centro-Oeste 86,03% · Nordeste 82,71% · Norte 76,57%
+* Receita de frete: R$ 1.037.081,11 · Ticket médio: R$ 47,14 · Tempo médio de entrega: 4,39 dias · Custo por km médio: R$ 0,06 (média por envio de frete/km, calculada no Power BI)
+* SLA por região, do melhor pro pior: Sudeste 88,04% · Sul 87,21% · Centro-Oeste 86,03% · Nordeste 82,72% · Norte 76,57%
 * Ranking de SLA por transportadora: AeroExpress 87,56% (1º) · SwiftLog Brasil 87,47% · Bandeirantes Log 86,16% · Costa Sul Transporte 85,90% · AtlanticoCargo 83,24% · Fenix Delivery 82,04% · TransNorte Cargo 77,82% (último)
 
 Esses números vieram de execução real de SQL contra a base — qualquer texto novo (README, post do LinkedIn, este documento) tem que bater com eles.
@@ -228,8 +224,9 @@ Esses números vieram de execução real de SQL contra a base — qualquer texto
 ## Armadilhas já mapeadas (para não repetir em projetos futuros)
 
 * CSVs usam `;` como delimitador — sempre `DELIMITER ';'` no `\copy`.
+* O `\copy` do `02_carregar_dados.sql` usa caminho relativo (`03_dados/...`): rodar o `psql` a partir da raiz do repositório.
 * Tabelas ficam no schema `logistica`, não em `public` — sempre `SET search_path` antes de qualquer query.
-* Coluna calculada de "no prazo" comparando `data_entrega <= data_prometida` direto quebra quando as colunas são datetime com hora — usar `TRUNC()` (ou equivalente) pra comparar só a data.
+* Coluna calculada de "no prazo" comparando `data_entrega <= data_prometida` direto quebra quando as colunas são datetime com hora — converter as duas para data com `::date` (no PostgreSQL, `TRUNC()` é função de Oracle) pra comparar só a data.
 * Medida nova criada com o mesmo nome de uma coluna existente trava com erro de nome duplicado — sempre criar como **Nova coluna** (não **Nova medida**) quando for uma coluna calculada, e vice-versa.
 * Combinar duas medidas em escalas muito diferentes (ex: Ticket Médio em reais e SLA % em percentual) no mesmo eixo de um gráfico de colunas agrupadas achata a menor — usar **Gráfico de Colunas Clusterizadas e Linhas** com a segunda medida na "Linha" (eixo secundário).
 * O visual de **Mapa** do Power BI geocodifica sigla de UF brasileira contra a base do Bing Maps, que pode confundir com sigla de estado americano — nesse caso, a alternativa é gerar uma imagem estática do mapa por região no Claude Design em vez de depender do visual nativo.
