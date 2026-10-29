@@ -1,0 +1,16 @@
+filial_id;uf;cidade;regiao;tipo
+1;SP;São Paulo;Sudeste;CD Principal
+2;SP;Campinas;Sudeste;CD Regional
+3;RJ;Duque de Caxias;Sudeste;CD Regional
+4;MG;Contagem;Sudeste;CD Regional
+5;PR;Curitiba;Sul;CD Regional
+6;RS;Canoas;Sul;CD Regional
+7;SC;Joinville;Sul;CD Regional
+8;PE;Recife;Nordeste;CD Regional
+9;CE;Fortaleza;Nordeste;CD Regional
+10;BA;Feira de Santana;Nordeste;CD Regional
+11;GO;Aparecida;Centro-Oeste;CD Regional
+12;DF;Brasília;Centro-Oeste;CD Regional
+13;PA;Belém;Norte;CD Regional
+14;AM;Manaus;Norte;CD Regional
+15;MT;Cuiabá;Centro-Oeste;Hub
